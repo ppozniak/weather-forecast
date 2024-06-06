@@ -1,6 +1,6 @@
 import { ResponsivePie } from "@nivo/pie";
 
-import { geocodingSearch } from "./api";
+import { fetchWeekForecast, geocodingSearch } from "./api";
 
 function App() {
   const dataPie = [
@@ -19,6 +19,10 @@ function App() {
   const handleClick = async () => {
     const results = await geocodingSearch("paris");
     console.log("🚀 ~ fetchThing ~ results:", results);
+
+    const { longitude, latitude } = results[0];
+    const forecast = await fetchWeekForecast({ longitude, latitude });
+    console.log("🚀 ~ handleClick ~ forecast:", forecast);
   };
 
   return (
