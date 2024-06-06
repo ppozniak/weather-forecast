@@ -34,7 +34,7 @@ export interface ForecastResults {
 }
 
 export interface DailyForecast {
-  time: Date[];
+  time: string[];
   temperature_2m_max: number[];
   temperature_2m_min: number[];
   precipitation_sum: number[];
