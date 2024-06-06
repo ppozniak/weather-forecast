@@ -2,6 +2,13 @@ import { Datum, Serie } from "@nivo/line";
 import { ForecastResults } from "../api/types";
 import { pick } from "lodash";
 
+const READABLE_SERIES_ID = {
+  temperature_2m_max: "Max temp",
+  temperature_2m_min: "Min temp",
+  precipitation_sum: "Precipitation",
+} as const;
+
+// @TODO: Use units from results
 export function forecastResultsToChart(results: ForecastResults): Serie[] {
   // Pick serializable data sets
   const serializable = pick(results.daily, [
@@ -23,7 +30,13 @@ export function forecastResultsToChart(results: ForecastResults): Serie[] {
         y: value,
       }));
 
-      return [...final, { id, data: points }];
+      return [
+        ...final,
+        {
+          id: READABLE_SERIES_ID[id as keyof typeof READABLE_SERIES_ID],
+          data: points,
+        },
+      ];
     },
     []
   );

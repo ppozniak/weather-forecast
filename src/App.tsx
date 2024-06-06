@@ -1,35 +1,51 @@
-import { fetchWeekForecast, geocodingSearch } from "./api";
+import { fetchWeekForecast } from "./api";
 import { useState } from "react";
 import { forecastResultsToChart } from "./utils/chart-transformers";
 import { Serie } from "@nivo/line";
 import LineChart from "./components/line-chart";
+import CitySearchForm from "./components/city-search-form";
+import { GeocodeSearchResults } from "./api/types";
 
 function App() {
   const [chartData, setChartData] = useState<Serie[]>([]);
+  const [results, setResults] = useState<GeocodeSearchResults>();
 
-  const handleClick = async () => {
-    const results = await geocodingSearch("paris");
-    console.log("🚀 ~ fetchThing ~ results:", results);
+  // @TODO: Loading state
+  const [errorMessage, setErrorMessage] = useState("");
 
-    const { longitude, latitude } = results[0];
-    const forecast = await fetchWeekForecast({ longitude, latitude });
-    console.log("🚀 ~ handleClick ~ forecast:", forecast);
+  const handleSearchSuccess = async (results: GeocodeSearchResults[]) => {
+    if (results.length) {
+      setErrorMessage("");
+      const { longitude, latitude } = results[0];
+      setResults(results[0]);
+      const forecast = await fetchWeekForecast({ longitude, latitude });
+      const data = forecastResultsToChart(forecast);
 
-    const data = forecastResultsToChart(forecast);
-    console.log("🚀 ~ handleClick ~ data:", data);
-
-    setChartData(data);
+      setChartData(data);
+    } else {
+      setErrorMessage("City not found");
+    }
   };
 
   return (
     <div className="container h-screen">
       <div className="flex justify-center items-center h-full flex-col">
-        <h1 className="text-4xl text-green-400">Hello there</h1>
-        <div>
-          <button onClick={handleClick}>Download</button>
-        </div>
+        <h1 className="text-4xl text-green-400 mb-4">Weather forecast</h1>
+        <CitySearchForm onSearch={handleSearchSuccess} />
+
+        {errorMessage && (
+          <div className="text-red-700 mt-4 animate-pulse">{errorMessage}</div>
+        )}
+
         <div className="w-full h-96 mt-4 max-w-4xl">
-          {!!chartData.length && <LineChart data={chartData} />}
+          {!!chartData.length && (
+            <>
+              <div>
+                Forecast for {results?.country}, {results?.name}
+              </div>
+              <LineChart data={chartData} />
+            </>
+          )}
         </div>
       </div>
     </div>

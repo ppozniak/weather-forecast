@@ -27,7 +27,7 @@ const FORECAST_EXAMPLE: ForecastResults = {
 
 const FORECAST_CHART_EXAMPLE: Serie[] = [
   {
-    id: "temperature_2m_max",
+    id: "Max temp",
     data: [
       {
         x: "6/6/2024",
@@ -40,7 +40,7 @@ const FORECAST_CHART_EXAMPLE: Serie[] = [
     ],
   },
   {
-    id: "temperature_2m_min",
+    id: "Min temp",
     data: [
       {
         x: "6/6/2024",
@@ -53,7 +53,7 @@ const FORECAST_CHART_EXAMPLE: Serie[] = [
     ],
   },
   {
-    id: "precipitation_sum",
+    id: "Precipitation",
     data: [
       {
         x: "6/6/2024",
